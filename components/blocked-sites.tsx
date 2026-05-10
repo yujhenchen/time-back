@@ -144,9 +144,7 @@ export function BlockedSites() {
   }, [watchedUrl])
 
   function handleSuggestionSelect(domain: string) {
-    form.setValue("url", domain, { shouldValidate: true })
-    setShowSuggestions(false)
-    setSuggestions([])
+    addUrl(domain)
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -183,8 +181,8 @@ export function BlockedSites() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  async function onSubmit(data: z.infer<typeof blockedUrlSchema>) {
-    const newUrl = normalizeUrl(data.url)
+  async function addUrl(rawUrl: string) {
+    const newUrl = normalizeUrl(rawUrl)
 
     if (blockedUrls.includes(newUrl)) {
       toast.error("URL already exists", {
@@ -212,6 +210,10 @@ export function BlockedSites() {
         position: "bottom-right",
       })
     }
+  }
+
+  async function onSubmit(data: z.infer<typeof blockedUrlSchema>) {
+    addUrl(data.url)
   }
 
   async function handleRemoveUrl(urlToRemove: string) {
