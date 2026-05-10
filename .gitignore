@@ -31,3 +31,8 @@ dist/
 
 # typescript
 .tsbuildinfo
+
+.opencode
+
+openspec/config.yaml
+
