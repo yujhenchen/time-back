@@ -49,7 +49,7 @@ example.com/path      →  example.com/path
 ## Navigation Blocking
 
 - DNR dynamic rule per stored URL
-- `requestDomain` condition matches both `example.com` and `*.example.com` (covers subdomains and paths)
+- `urlFilter: ||domain^` matches the domain and all subdomains (e.g., `||example.com^` matches `example.com`, `www.example.com`, `sub.example.com`, and any path)
 - `action.type: "redirect"` → `blocked.html` with original URL as query param
 - Rules rebuilt on storage change and extension startup
 
