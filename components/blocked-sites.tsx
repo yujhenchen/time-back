@@ -63,6 +63,8 @@ export function BlockedSites() {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isSearching, setIsSearching] = useState(false)
+  const [editingUrls, setEditingUrls] = useState<Set<string>>(new Set())
+  const [editValues, setEditValues] = useState<Record<string, string>>({})
   const searchTimer = useRef<ReturnType<typeof setTimeout>>()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -225,6 +227,70 @@ export function BlockedSites() {
     }
   }
 
+  function handleEditStart(url: string) {
+    setEditingUrls((prev) => new Set(prev).add(url))
+    setEditValues((prev) => ({ ...prev, [url]: url }))
+  }
+
+  function handleEditCancel(url: string) {
+    setEditingUrls((prev) => {
+      const next = new Set(prev)
+      next.delete(url)
+      return next
+    })
+    setEditValues((prev) => {
+      const next = { ...prev }
+      delete next[url]
+      return next
+    })
+  }
+
+  async function handleEditSave(originalUrl: string) {
+    const rawValue = editValues[originalUrl]
+    if (!rawValue) return
+
+    const result = blockedUrlSchema.safeParse({ url: rawValue })
+    if (!result.success) {
+      const error = result.error.issues[0]?.message || "Invalid URL"
+      toast.error(error)
+      return
+    }
+
+    const newUrl = normalizeUrl(rawValue)
+
+    if (newUrl === originalUrl) {
+      handleEditCancel(originalUrl)
+      return
+    }
+
+    if (blockedUrls.includes(newUrl)) {
+      toast.error("URL already exists", {
+        description: `${newUrl} is already in your blocked list.`,
+        position: "bottom-right",
+      })
+      return
+    }
+
+    try {
+      const updatedUrls = blockedUrls.map((u) =>
+        u === originalUrl ? newUrl : u,
+      )
+      await chrome.storage.sync.set({ blockedUrls: updatedUrls })
+      setBlockedUrls(updatedUrls)
+      handleEditCancel(originalUrl)
+      toast.success("URL updated", {
+        description: `${originalUrl} has been updated to ${newUrl}.`,
+        position: "bottom-right",
+      })
+    } catch (error) {
+      console.error("Error updating URL:", error)
+      toast.error("Failed to update URL", {
+        description: "Please try again later.",
+        position: "bottom-right",
+      })
+    }
+  }
+
   return (
     <Card className="w-full sm:max-w-2xl">
       <CardHeader>
@@ -329,46 +395,99 @@ export function BlockedSites() {
                   Blocked URLs ({blockedUrls.length})
                 </h3>
                 <div className="space-y-2">
-                  {blockedUrls.map((url) => (
-                    <div
-                      key={url}
-                      className="flex items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <img
-                          src={`https://www.google.com/s2/favicons?domain=${url.split("/")[0]}&sz=16`}
-                          alt=""
-                          className="h-4 w-4 shrink-0"
-                          onError={(e) => {
-                            ;(
-                              e.target as HTMLImageElement
-                            ).style.display = "none"
-                          }}
-                        />
-                        <span className="font-mono truncate">{url}</span>
-                      </div>
-                      
-                      <div className='flex space-x-4'>
-                        <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleRemoveUrl(url)}
+                  {blockedUrls.map((url) => {
+                    const isEditing = editingUrls.has(url)
+                    return (
+                      <div
+                        key={url}
+                        className="flex items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm"
                       >
-                        <Pencil />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        onClick={() => handleRemoveUrl(url)}
-                      >
-                       <Trash />
-                      </Button>
+                        {isEditing ? (
+                          <>
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <img
+                                src={`https://www.google.com/s2/favicons?domain=${url.split("/")[0]}&sz=16`}
+                                alt=""
+                                className="h-4 w-4 shrink-0"
+                                onError={(e) => {
+                                  ;(
+                                    e.target as HTMLImageElement
+                                  ).style.display = "none"
+                                }}
+                              />
+                              <Input
+                                value={editValues[url] || ""}
+                                onChange={(e) =>
+                                  setEditValues((prev) => ({
+                                    ...prev,
+                                    [url]: e.target.value,
+                                  }))
+                                }
+                                className="h-8 text-sm font-mono"
+                                autoComplete="off"
+                              />
+                            </div>
+                            <div className="flex space-x-2 shrink-0 ml-2">
+                              <Button
+                                type="button"
+                                variant="default"
+                                size="sm"
+                                className="h-8 text-xs"
+                                onClick={() => handleEditSave(url)}
+                              >
+                                Save
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="h-8 text-xs"
+                                onClick={() => handleEditCancel(url)}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2 min-w-0">
+                              <img
+                                src={`https://www.google.com/s2/favicons?domain=${url.split("/")[0]}&sz=16`}
+                                alt=""
+                                className="h-4 w-4 shrink-0"
+                                onError={(e) => {
+                                  ;(
+                                    e.target as HTMLImageElement
+                                  ).style.display = "none"
+                                }}
+                              />
+                              <span className="font-mono truncate">
+                                {url}
+                              </span>
+                            </div>
+                            <div className="flex space-x-4">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handleEditStart(url)}
+                              >
+                                <Pencil />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                onClick={() => handleRemoveUrl(url)}
+                              >
+                                <Trash />
+                              </Button>
+                            </div>
+                          </>
+                        )}
                       </div>
-                      
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             </div>
