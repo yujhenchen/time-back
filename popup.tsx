@@ -5,9 +5,7 @@ import { Settings } from "./settings"
 function IndexPopup() {
   return (
     <div
-      style={{
-        padding: 16
-      }}>
+      className='min-w-96 p-4'>
       <Settings />
       <Toaster />
     </div>
