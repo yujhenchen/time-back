@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { SearchIcon } from "lucide-react"
+import { Pencil, SearchIcon, Trash } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -51,10 +51,10 @@ function normalizeUrl(input: string): string {
   return url
 }
 
-function extractDomain(input: string): string {
-  const normalized = normalizeUrl(input)
-  return normalized.split("/")[0]
-}
+// function extractDomain(input: string): string {
+//   const normalized = normalizeUrl(input)
+//   return normalized.split("/")[0]
+// }
 
 function toDomain(phrase: string): string {
   const firstWord = phrase.trim().toLowerCase().split(" ")[0]
@@ -272,6 +272,14 @@ export function BlockedSites() {
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
                       )}
                     </div>
+                    <Button
+                        type="submit"
+                        form="blocked-urls-form"
+                        disabled={isLoading}
+                      >
+                        Save
+                      </Button>
+                      
                     {showSuggestions && suggestions.length > 0 && (
                       <div className="absolute z-20 mt-1 w-full rounded-md border border-input bg-popover text-popover-foreground shadow-md max-h-60 overflow-y-auto">
                         {suggestions.map((domain, index) => (
@@ -343,15 +351,26 @@ export function BlockedSites() {
                         />
                         <span className="font-mono truncate">{url}</span>
                       </div>
-                      <Button
+                      
+                      <div className='flex space-x-4'>
+                        <Button
                         type="button"
                         variant="outline"
-                        size="sm"
+                        size="icon"
                         onClick={() => handleRemoveUrl(url)}
-                        className="h-8 text-xs shrink-0 ml-2"
                       >
-                        Delete
+                        <Pencil />
                       </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => handleRemoveUrl(url)}
+                      >
+                       <Trash />
+                      </Button>
+                      </div>
+                      
                     </div>
                   ))}
                 </div>
@@ -370,7 +389,7 @@ export function BlockedSites() {
         )}
       </CardContent>
       <CardFooter>
-        <Field orientation="horizontal">
+        {/* <Field orientation="horizontal">
           <Button
             type="submit"
             form="blocked-urls-form"
@@ -378,7 +397,7 @@ export function BlockedSites() {
           >
             Save
           </Button>
-        </Field>
+        </Field> */}
       </CardFooter>
     </Card>
   )
