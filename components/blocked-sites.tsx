@@ -9,13 +9,6 @@ import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
-import {
   Field,
   FieldDescription,
   FieldError,
@@ -292,14 +285,15 @@ export function BlockedSites() {
   }
 
   return (
-    <Card className="w-full sm:max-w-2xl">
-      <CardHeader>
-        <CardTitle>Blocked Sites</CardTitle>
-        <CardDescription>
+    <div className="w-full sm:max-w-2xl">
+      <div className='p-4'>
+        <h1 className='scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance'>Blocked Sites</h1>
+        <p className='leading-7 [&:not(:first-child)]:mt-6'>
           Add URLs you want to block or manage your blocked sites list.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+        </p>
+      </div>
+      
+      <div className='p-4'>
         <form id="blocked-urls-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
@@ -502,7 +496,7 @@ export function BlockedSites() {
             </div>
           </>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
