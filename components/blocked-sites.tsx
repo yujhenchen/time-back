@@ -12,9 +12,8 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card"
 import {
   Field,
@@ -50,11 +49,6 @@ function normalizeUrl(input: string): string {
   url = url.replace(/\/$/, "")
   return url
 }
-
-// function extractDomain(input: string): string {
-//   const normalized = normalizeUrl(input)
-//   return normalized.split("/")[0]
-// }
 
 function toDomain(phrase: string): string {
   const firstWord = phrase.trim().toLowerCase().split(" ")[0]
@@ -390,17 +384,6 @@ export function BlockedSites() {
           </>
         )}
       </CardContent>
-      <CardFooter>
-        {/* <Field orientation="horizontal">
-          <Button
-            type="submit"
-            form="blocked-urls-form"
-            disabled={isLoading}
-          >
-            Save
-          </Button>
-        </Field> */}
-      </CardFooter>
     </Card>
   )
 }
