@@ -1,3 +1,7 @@
+import { Storage } from "@plasmohq/storage"
+
+const storage = new Storage()
+
 async function syncDNRRules(blockedUrls: string[]) {
   const existingRules = await chrome.declarativeNetRequest.getDynamicRules()
   const existingRuleIds = existingRules.map((r) => r.id)
@@ -9,28 +13,27 @@ async function syncDNRRules(blockedUrls: string[]) {
       action: {
         type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
         redirect: {
-          extensionPath: `/blocked.html?url=${encodeURIComponent(url)}`,
-        },
+          extensionPath: `/blocked.html?url=${encodeURIComponent(url)}`
+        }
       },
       condition: {
         urlFilter: `||${url}^`,
         resourceTypes: [
           chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
-          chrome.declarativeNetRequest.ResourceType.SUB_FRAME,
-        ],
-      },
-    }),
+          chrome.declarativeNetRequest.ResourceType.SUB_FRAME
+        ]
+      }
+    })
   )
 
   await chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: existingRuleIds,
-    addRules: newRules,
+    addRules: newRules
   })
 }
 
 async function initBlocking() {
-  const result = await chrome.storage.sync.get(["blockedUrls"])
-  const blockedUrls: string[] = result.blockedUrls || []
+  const blockedUrls: string[] = (await storage.get("blockedUrls")) || []
   await syncDNRRules(blockedUrls)
 }
 
@@ -44,9 +47,9 @@ chrome.runtime.onStartup.addListener(() => {
   initBlocking()
 })
 
-chrome.storage.onChanged.addListener((changes) => {
-  if (changes.blockedUrls) {
-    const newUrls: string[] = changes.blockedUrls.newValue || []
+storage.watch({
+  blockedUrls: (c) => {
+    const newUrls: string[] = c.newValue || []
     syncDNRRules(newUrls)
   }
 })

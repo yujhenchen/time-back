@@ -1,5 +1,15 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Pencil, SearchIcon, Trash } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
@@ -7,33 +17,21 @@ import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
 
-import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
+import { useStorage } from "@plasmohq/storage/hook"
 
 const blockedUrlSchema = z.object({
   url: z
     .string()
     .min(3, "URL must be at least 3 characters.")
-    .refine(
-      (val) => {
-        try {
-          const normalized = val.startsWith("http") ? val : "https://" + val
-          new URL(normalized)
-          return true
-        } catch {
-          return false
-        }
-      },
-      "Please enter a valid URL (e.g., example.com)",
-    ),
+    .refine((val) => {
+      try {
+        const normalized = val.startsWith("http") ? val : "https://" + val
+        new URL(normalized)
+        return true
+      } catch {
+        return false
+      }
+    }, "Please enter a valid URL (e.g., example.com)")
 })
 
 function normalizeUrl(input: string): string {
@@ -50,8 +48,7 @@ function toDomain(phrase: string): string {
 }
 
 export function BlockedSites() {
-  const [blockedUrls, setBlockedUrls] = useState<string[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [blockedUrls, setBlockedUrls] = useStorage<string[]>("blockedUrls", [])
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -65,26 +62,11 @@ export function BlockedSites() {
   const form = useForm<z.infer<typeof blockedUrlSchema>>({
     resolver: zodResolver(blockedUrlSchema),
     defaultValues: {
-      url: "",
-    },
+      url: ""
+    }
   })
 
   const watchedUrl = form.watch("url")
-
-  useEffect(() => {
-    const loadBlockedUrls = async () => {
-      try {
-        const result = await chrome.storage.sync.get(["blockedUrls"])
-        setBlockedUrls(result.blockedUrls || [])
-      } catch (error) {
-        console.error("Error loading blocked URLs:", error)
-        toast.error("Failed to load blocked URLs")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadBlockedUrls()
-  }, [])
 
   useEffect(() => {
     if (searchTimer.current) {
@@ -102,7 +84,7 @@ export function BlockedSites() {
     searchTimer.current = setTimeout(async () => {
       try {
         const res = await fetch(
-          `https://duckduckgo.com/ac/?q=${encodeURIComponent(trimmed)}&type=list`,
+          `https://duckduckgo.com/ac/?q=${encodeURIComponent(trimmed)}&type=list`
         )
         const data = await res.json()
 
@@ -141,14 +123,10 @@ export function BlockedSites() {
 
     if (e.key === "ArrowDown") {
       e.preventDefault()
-      setSelectedIndex((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : 0,
-      )
+      setSelectedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0))
     } else if (e.key === "ArrowUp") {
       e.preventDefault()
-      setSelectedIndex((prev) =>
-        prev > 0 ? prev - 1 : suggestions.length - 1,
-      )
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1))
     } else if (e.key === "Enter" && selectedIndex >= 0) {
       e.preventDefault()
       handleSuggestionSelect(suggestions[selectedIndex])
@@ -176,27 +154,26 @@ export function BlockedSites() {
     if (blockedUrls.includes(newUrl)) {
       toast.error("URL already exists", {
         description: `${newUrl} is already in your blocked list.`,
-        position: "bottom-right",
+        position: "bottom-right"
       })
       return
     }
 
     try {
       const updatedUrls = [...blockedUrls, newUrl]
-      await chrome.storage.sync.set({ blockedUrls: updatedUrls })
-      setBlockedUrls(updatedUrls)
+      await setBlockedUrls(updatedUrls)
       form.reset()
       setSuggestions([])
       setShowSuggestions(false)
       toast.success("URL added", {
         description: `${newUrl} has been added to your blocked list.`,
-        position: "bottom-right",
+        position: "bottom-right"
       })
     } catch (error) {
       console.error("Error saving URL:", error)
       toast.error("Failed to save URL", {
         description: "Please try again later.",
-        position: "bottom-right",
+        position: "bottom-right"
       })
     }
   }
@@ -208,11 +185,10 @@ export function BlockedSites() {
   async function handleRemoveUrl(urlToRemove: string) {
     try {
       const updatedUrls = blockedUrls.filter((u) => u !== urlToRemove)
-      await chrome.storage.sync.set({ blockedUrls: updatedUrls })
-      setBlockedUrls(updatedUrls)
+      await setBlockedUrls(updatedUrls)
       toast.success("URL removed", {
         description: `${urlToRemove} has been removed from your blocked list.`,
-        position: "bottom-right",
+        position: "bottom-right"
       })
     } catch (error) {
       console.error("Error removing URL:", error)
@@ -259,41 +235,42 @@ export function BlockedSites() {
     if (blockedUrls.includes(newUrl)) {
       toast.error("URL already exists", {
         description: `${newUrl} is already in your blocked list.`,
-        position: "bottom-right",
+        position: "bottom-right"
       })
       return
     }
 
     try {
       const updatedUrls = blockedUrls.map((u) =>
-        u === originalUrl ? newUrl : u,
+        u === originalUrl ? newUrl : u
       )
-      await chrome.storage.sync.set({ blockedUrls: updatedUrls })
-      setBlockedUrls(updatedUrls)
+      await setBlockedUrls(updatedUrls)
       handleEditCancel(originalUrl)
       toast.success("URL updated", {
         description: `${originalUrl} has been updated to ${newUrl}.`,
-        position: "bottom-right",
+        position: "bottom-right"
       })
     } catch (error) {
       console.error("Error updating URL:", error)
       toast.error("Failed to update URL", {
         description: "Please try again later.",
-        position: "bottom-right",
+        position: "bottom-right"
       })
     }
   }
 
   return (
     <div className="w-full sm:max-w-2xl">
-      <div className='p-4'>
-        <h1 className='scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance'>Blocked Sites</h1>
-        <p className='leading-7 [&:not(:first-child)]:mt-6'>
+      <div className="p-4">
+        <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+          Blocked Sites
+        </h1>
+        <p className="leading-7 [&:not(:first-child)]:mt-6">
           Add URLs you want to block or manage your blocked sites list.
         </p>
       </div>
-      
-      <div className='p-4'>
+
+      <div className="p-4">
         <form id="blocked-urls-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
@@ -301,9 +278,7 @@ export function BlockedSites() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="url-input">
-                    Add URL
-                  </FieldLabel>
+                  <FieldLabel htmlFor="url-input">Add URL</FieldLabel>
                   <div className="relative" ref={dropdownRef}>
                     <div className="relative">
                       <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
@@ -320,22 +295,17 @@ export function BlockedSites() {
                         className="pl-9"
                         onKeyDown={handleKeyDown}
                         onFocus={() => {
-                          if (suggestions.length > 0)
-                            setShowSuggestions(true)
+                          if (suggestions.length > 0) setShowSuggestions(true)
                         }}
                       />
                       {isSearching && (
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
                       )}
                     </div>
-                    <Button
-                        type="submit"
-                        form="blocked-urls-form"
-                        disabled={isLoading}
-                      >
-                        Save
-                      </Button>
-                      
+                    <Button type="submit" form="blocked-urls-form">
+                      Save
+                    </Button>
+
                     {showSuggestions && suggestions.length > 0 && (
                       <div className="absolute z-20 mt-1 w-full rounded-md border border-input bg-popover text-popover-foreground shadow-md max-h-60 overflow-y-auto">
                         {suggestions.map((domain, index) => (
@@ -348,21 +318,17 @@ export function BlockedSites() {
                                 : "hover:bg-accent hover:text-accent-foreground"
                             }`}
                             onClick={() => handleSuggestionSelect(domain)}
-                            onMouseEnter={() => setSelectedIndex(index)}
-                          >
+                            onMouseEnter={() => setSelectedIndex(index)}>
                             <img
                               src={`https://www.google.com/s2/favicons?domain=${domain}&sz=16`}
                               alt=""
                               className="h-4 w-4 shrink-0"
                               onError={(e) => {
-                                ;(
-                                  e.target as HTMLImageElement
-                                ).style.display = "none"
+                                ;(e.target as HTMLImageElement).style.display =
+                                  "none"
                               }}
                             />
-                            <span className="font-mono truncate">
-                              {domain}
-                            </span>
+                            <span className="font-mono truncate">{domain}</span>
                           </button>
                         ))}
                       </div>
@@ -394,8 +360,7 @@ export function BlockedSites() {
                     return (
                       <div
                         key={url}
-                        className="flex items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      >
+                        className="flex items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm">
                         {isEditing ? (
                           <>
                             <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -414,7 +379,7 @@ export function BlockedSites() {
                                 onChange={(e) =>
                                   setEditValues((prev) => ({
                                     ...prev,
-                                    [url]: e.target.value,
+                                    [url]: e.target.value
                                   }))
                                 }
                                 className="h-8 text-sm font-mono"
@@ -427,8 +392,7 @@ export function BlockedSites() {
                                 variant="default"
                                 size="sm"
                                 className="h-8 text-xs"
-                                onClick={() => handleEditSave(url)}
-                              >
+                                onClick={() => handleEditSave(url)}>
                                 Save
                               </Button>
                               <Button
@@ -436,8 +400,7 @@ export function BlockedSites() {
                                 variant="outline"
                                 size="sm"
                                 className="h-8 text-xs"
-                                onClick={() => handleEditCancel(url)}
-                              >
+                                onClick={() => handleEditCancel(url)}>
                                 Cancel
                               </Button>
                             </div>
@@ -455,25 +418,21 @@ export function BlockedSites() {
                                   ).style.display = "none"
                                 }}
                               />
-                              <span className="font-mono truncate">
-                                {url}
-                              </span>
+                              <span className="font-mono truncate">{url}</span>
                             </div>
                             <div className="flex space-x-4">
                               <Button
                                 type="button"
                                 variant="outline"
                                 size="icon"
-                                onClick={() => handleEditStart(url)}
-                              >
+                                onClick={() => handleEditStart(url)}>
                                 <Pencil />
                               </Button>
                               <Button
                                 type="button"
                                 variant="destructive"
                                 size="icon"
-                                onClick={() => handleRemoveUrl(url)}
-                              >
+                                onClick={() => handleRemoveUrl(url)}>
                                 <Trash />
                               </Button>
                             </div>
@@ -488,7 +447,7 @@ export function BlockedSites() {
           </>
         )}
 
-        {!isLoading && blockedUrls.length === 0 && (
+        {blockedUrls.length === 0 && (
           <>
             <Separator className="my-6" />
             <div className="text-center py-6 text-sm text-muted-foreground">

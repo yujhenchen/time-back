@@ -1,36 +1,12 @@
 "use client"
 
-import { Moon, Sun } from "lucide-react"
-import { useEffect, useState } from "react"
-
 import { Button } from "@/components/ui/button"
+import { Moon, Sun } from "lucide-react"
+
+import { useStorage } from "@plasmohq/storage/hook"
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("light")
-  const [mounted, setMounted] = useState(false)
-
-  // Load theme from Chrome storage on mount
-  useEffect(() => {
-    const loadTheme = async () => {
-      try {
-        const result = await chrome.storage.sync.get(["theme"])
-        const savedTheme = result.theme || "light"
-        setTheme(savedTheme)
-        applyTheme(savedTheme)
-      } catch (error) {
-        console.error("Error loading theme:", error)
-        // Fallback to system preference
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-          .matches
-          ? "dark"
-          : "light"
-        setTheme(systemTheme)
-        applyTheme(systemTheme)
-      }
-      setMounted(true)
-    }
-    loadTheme()
-  }, [])
+  const [theme, setTheme] = useStorage<"light" | "dark">("theme", "light")
 
   const applyTheme = (newTheme: "light" | "dark") => {
     const root = document.documentElement
@@ -43,25 +19,8 @@ export function ThemeToggle() {
 
   const toggleTheme = async () => {
     const newTheme = theme === "light" ? "dark" : "light"
-    setTheme(newTheme)
     applyTheme(newTheme)
-
-    // Save theme preference to Chrome storage
-    try {
-      await chrome.storage.sync.set({ theme: newTheme })
-    } catch (error) {
-      console.error("Error saving theme:", error)
-    }
-  }
-
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!mounted) {
-    return (
-      <Button variant="outline" size="icon" disabled>
-        <Sun className="h-[1.2rem] w-[1.2rem]" />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
-    )
+    await setTheme(newTheme)
   }
 
   return (
@@ -69,8 +28,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       onClick={toggleTheme}
-      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-    >
+      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}>
       {theme === "light" ? (
         <Sun className="h-[1.2rem] w-[1.2rem] transition-all" />
       ) : (
