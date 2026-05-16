@@ -42,10 +42,12 @@
   "manifest": {
     "permissions": [
       "declarativeNetRequest",
-      "storage"
+      "storage",
+      "webRequest",
+      "webRequestBlocking"
     ],
     "host_permissions": [
-      "https://*/*"
+      "<all_urls>"
     ],
     "web_accessible_resources": [
       {
@@ -59,7 +61,8 @@
     ],
     "browser_specific_settings": {
       "gecko": {
-        "id": "{ed7ba470-8e54-465e-825c-99712043e01c}"
+        "id": "{ed7ba470-8e54-465e-825c-99712043e01c}",
+        "strict_min_version": "91.0"
       }
     }
   }
