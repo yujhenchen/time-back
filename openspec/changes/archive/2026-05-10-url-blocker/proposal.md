@@ -14,11 +14,13 @@ Users need a simple way to block distracting websites on Firefox mobile. Existin
 ## Capabilities
 
 ### New Capabilities
+
 - `blocked-sites`: Add, list, and remove blocked URLs via popup UI
 - `navigation-blocking`: Intercept Firefox navigation to blocked URLs
 
 ### Modified Capabilities
-*(none — no existing specs are changing)*
+
+_(none — no existing specs are changing)_
 
 ## Impact
 

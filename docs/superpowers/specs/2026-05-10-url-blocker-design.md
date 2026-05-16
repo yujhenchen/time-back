@@ -61,10 +61,10 @@ example.com/path      →  example.com/path
 
 ## Files Changed
 
-| File | Change |
-|---|---|
-| `package.json` | Add `declarativeNetRequest` to manifest permissions |
-| `components/blocked-sites.tsx` | New — URL management UI with favicon preview |
-| `background.ts` | New — DNR rule sync on startup and storage change |
-| `blocked.html` | New — static blocked page served on redirect |
-| `settings.tsx` or `popup.tsx` | Wire in BlockedSites component |
+| File                           | Change                                              |
+| ------------------------------ | --------------------------------------------------- |
+| `package.json`                 | Add `declarativeNetRequest` to manifest permissions |
+| `components/blocked-sites.tsx` | New — URL management UI with favicon preview        |
+| `background.ts`                | New — DNR rule sync on startup and storage change   |
+| `blocked.html`                 | New — static blocked page served on redirect        |
+| `settings.tsx` or `popup.tsx`  | Wire in BlockedSites component                      |

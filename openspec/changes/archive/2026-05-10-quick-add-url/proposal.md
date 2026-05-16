@@ -13,9 +13,11 @@ The current flow to block a URL requires two steps: select a suggestion from the
 ## Capabilities
 
 ### New Capabilities
-*(none)*
+
+_(none)_
 
 ### Modified Capabilities
+
 - `blocked-sites`: Search suggestion selection changes from "fill input" to "directly add to block list"; pressing Enter in the input also saves directly
 
 ## Impact

@@ -29,8 +29,8 @@ Type → click Save button → saves (unchanged)
 
 ## Files Changed
 
-| File | Change |
-|---|---|
+| File                           | Change                                   |
+| ------------------------------ | ---------------------------------------- |
 | `components/blocked-sites.tsx` | Extract `addUrl()`, update both handlers |
 
 No new files, no new dependencies, no new permissions.

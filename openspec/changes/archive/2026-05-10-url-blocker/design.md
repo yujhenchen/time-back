@@ -5,6 +5,7 @@ This is a cross-browser (Firefox + Chrome) website blocker built on the existing
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Allow users to add URLs to a block list via the popup
 - Show live favicon preview as user types a URL (debounced, from Google favicon API)
 - Allow users to view and delete URLs from the block list
@@ -12,6 +13,7 @@ This is a cross-browser (Firefox + Chrome) website blocker built on the existing
 - Store block list in chrome.storage.sync (synced across devices)
 
 **Non-Goals:**
+
 - No scheduling or time-based blocking
 - No search/suggestions beyond favicon preview
 - No per-device or per-profile block lists
@@ -20,21 +22,25 @@ This is a cross-browser (Firefox + Chrome) website blocker built on the existing
 ## Decisions
 
 1. **Use declarativeNetRequest for blocking**
+
    - Firefox supports `declarativeNetRequest` on mobile and it works with static and dynamic rules
    - No persistent background script needed; rules persist across browser sessions
    - Alternative considered: `webNavigation` event — rejected because it requires a background service worker running constantly and is less reliable on mobile
 
 2. **Store blocked URLs as an array of strings in chrome.storage.sync**
+
    - Simple, no migration needed — just a string array
    - Syncs across Firefox profile automatically
    - Max storage is ~100KB which allows thousands of URLs
 
 3. **New React component for blocked-sites UI**
+
    - Follows existing pattern of inline settings in the popup
    - Separate component for clean separation: `BlockedSites.tsx`
    - Uses react-hook-form + zod for the URL input form (existing library)
 
 4. **Dynamic declarativeNetRequest rules**
+
    - Each blocked URL becomes one `Redirect` rule in the dynamic ruleset
    - `requestDomain` condition matches both `example.com` and `*.example.com` (covers subdomains and paths)
    - Rules are added/removed as users add/delete URLs

@@ -18,7 +18,7 @@ Edit-in-place for URLs in the blocked sites list. Multiple items can be edited s
 ```
 if editingUrls.has(url)
   → [favicon] [input] [Save button] [Cancel button]
-else  
+else
   → [favicon] [display url] [Pencil icon] [Trash icon]
 ```
 
@@ -32,6 +32,6 @@ When saving an edit, the new URL is checked against `blockedUrls` but the origin
 
 ## Files Changed
 
-| File | Change |
-|---|---|
+| File                           | Change                                                                            |
+| ------------------------------ | --------------------------------------------------------------------------------- |
 | `components/blocked-sites.tsx` | Add `editingUrls` state + edit/cancel handlers + conditional render in list items |
