@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { BlockedSites } from './components/blocked-sites'
-import { ThemeSettings } from './components/theme-settings'
+import { BlockedSites } from "./components/blocked-sites"
+import { ThemeSettings } from "./components/theme-settings"
 
 const formSchema = z.object({
   title: z
@@ -15,7 +15,7 @@ const formSchema = z.object({
   description: z
     .string()
     .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
+    .max(100, "Description must be at most 100 characters.")
 })
 
 export function Settings() {
@@ -23,8 +23,8 @@ export function Settings() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: "",
-    },
+      description: ""
+    }
   })
 
   return (

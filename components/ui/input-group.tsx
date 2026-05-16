@@ -1,10 +1,9 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import * as React from "react"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
+import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react"
 
 type InputGroupInputProps = React.ComponentProps<typeof Input>
 type InputGroupTextareaProps = React.ComponentProps<typeof Textarea>
@@ -49,12 +48,12 @@ const inputGroupAddonVariants = cva(
         "block-start":
           "[.border-b]:pb-3 order-first w-full justify-start px-3 pt-3 group-has-[>input]/input-group:pt-2.5",
         "block-end":
-          "[.border-t]:pt-3 order-last w-full justify-start px-3 pb-3 group-has-[>input]/input-group:pb-2.5",
-      },
+          "[.border-t]:pt-3 order-last w-full justify-start px-3 pb-3 group-has-[>input]/input-group:pb-2.5"
+      }
     },
     defaultVariants: {
-      align: "inline-start",
-    },
+      align: "inline-start"
+    }
   }
 )
 
@@ -89,12 +88,12 @@ const inputGroupButtonVariants = cva(
         sm: "h-8 gap-1.5 rounded-md px-2.5 has-[>svg]:px-2.5",
         "icon-xs":
           "size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0",
-        "icon-sm": "size-8 p-0 has-[>svg]:p-0",
-      },
+        "icon-sm": "size-8 p-0 has-[>svg]:p-0"
+      }
     },
     defaultVariants: {
-      size: "xs",
-    },
+      size: "xs"
+    }
   }
 )
 
@@ -168,6 +167,8 @@ InputGroupTextarea.displayName = "InputGroupTextarea"
 export {
   InputGroup,
   InputGroupAddon,
-  InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea
 }
-
