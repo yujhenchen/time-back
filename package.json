@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
+    "build:firefox-mv2": "plasmo build --target=firefox-mv2",
+    "build:firefox-mv3": "plasmo build --target=firefox-mv3",
     "package": "plasmo package",
     "debug": "plasmo dev --verbose"
   },
