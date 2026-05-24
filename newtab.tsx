@@ -14,7 +14,7 @@ function Clock() {
 
   return (
     <span className="tabular-nums">
-      {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+      {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
     </span>
   )
 }
