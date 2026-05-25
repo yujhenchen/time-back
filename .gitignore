@@ -36,3 +36,4 @@ dist/
 
 openspec/config.yaml
 
+.agents/
