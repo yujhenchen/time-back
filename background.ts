@@ -22,8 +22,8 @@ import { Storage } from "@plasmohq/storage"
 
 interface BlockedEntry {
   domain: string // e.g. "example.com"
-  path: string   // e.g. "/bad-path"  or "" for whole domain
-  raw: string    // original string from storage
+  path: string // e.g. "/bad-path"  or "" for whole domain
+  raw: string // original string from storage
 }
 
 // ---------------------------------------------------------------------------
@@ -72,7 +72,10 @@ let initialised = false
 
 /** Normalise a raw "example.com/path" string into a BlockedEntry. */
 function parseEntry(raw: string): BlockedEntry {
-  const normalised = raw.trim().toLowerCase().replace(/^https?:\/\//, "")
+  const normalised = raw
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
   const slashIndex = normalised.indexOf("/")
   const domain =
     slashIndex === -1 ? normalised : normalised.slice(0, slashIndex)
@@ -103,7 +106,9 @@ async function syncDNRRules(entries: BlockedEntry[]): Promise<void> {
     const existingRules = await chrome.declarativeNetRequest.getDynamicRules()
     if (!Array.isArray(existingRules)) {
       supportsDNR = false
-      console.warn("[blocker] DNR not supported (getDynamicRules did not return an array)")
+      console.warn(
+        "[blocker] DNR not supported (getDynamicRules did not return an array)"
+      )
       return
     }
     supportsDNR = true
@@ -240,7 +245,9 @@ async function init(force = false): Promise<void> {
       // webRequest path: listener already registered; it reads blockedEntries
       // directly and initialised is now true, so normal blocking resumes.
 
-      console.debug(`[blocker] Initialised with ${blockedEntries.length} entries`)
+      console.debug(
+        `[blocker] Initialised with ${blockedEntries.length} entries`
+      )
     } catch (err) {
       console.error("[blocker] Init failed:", err)
       initPromise = null // allow retry on next event
