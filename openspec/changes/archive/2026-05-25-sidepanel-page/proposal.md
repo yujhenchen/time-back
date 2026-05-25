@@ -12,9 +12,11 @@ The extension currently has popup, options, and new tab pages but no side panel.
 ## Capabilities
 
 ### New Capabilities
+
 - `sidepanel-page`: A browser side panel that renders the existing Settings component, accessible via the browser's side panel UI (Ctrl/Cmd+B or toolbar icon)
 
 ### Modified Capabilities
+
 <!-- None -->
 
 ## Impact

@@ -5,12 +5,14 @@ The extension has popup, settings, and options pages but no new tab override. Pl
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Create `newtab.tsx` as a default-export React component
 - Display a live clock showing current time (updates every second)
 - Show "time-guard" branding
 - Support light/dark theme via existing CSS variables
 
 **Non-Goals:**
+
 - No settings or configuration UI on the new tab
 - No blocked sites management on the new tab
 - No integration with popup/options pages

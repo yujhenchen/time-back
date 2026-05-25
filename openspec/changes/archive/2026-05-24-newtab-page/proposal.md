@@ -11,9 +11,11 @@ The extension currently has no new tab page. A new tab page gives the extension 
 ## Capabilities
 
 ### New Capabilities
+
 - `newtab-page`: A new tab page that replaces the browser's default new tab, displaying a live clock and basic time-guard branding
 
 ### Modified Capabilities
+
 <!-- None -->
 
 ## Impact

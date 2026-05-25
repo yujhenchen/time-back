@@ -5,12 +5,14 @@
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Firefox blocks URLs using the `webRequest` blocking API
 - Chrome continues using `declarativeNetRequest` (more performant, no content script needed)
 - Runtime browser detection picks the right path automatically
 - No duplicate blocking — only one mechanism active per browser
 
 **Non-Goals:**
+
 - No changes to the popup UI or storage layer
 - No changes to `blocked.html` display page
 - No bundling/per-build targeting — single codebase, runtime detection

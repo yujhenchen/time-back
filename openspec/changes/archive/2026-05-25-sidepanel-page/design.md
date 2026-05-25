@@ -5,12 +5,14 @@ The extension has popup, options, and newtab pages. A side panel provides a dock
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Create `sidepanel.tsx` as a default-export React component
 - Reuse the existing `Settings` component for blocked sites and theme
 - Add `"sidePanel"` to manifest permissions in `package.json`
 - Support light/dark theme via existing CSS variables
 
 **Non-Goals:**
+
 - No new settings or configuration in the side panel
 - No changes to popup, options, or newtab behavior
 

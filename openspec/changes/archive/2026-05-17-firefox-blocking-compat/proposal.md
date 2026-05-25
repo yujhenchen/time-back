@@ -17,7 +17,7 @@
 
 ### Modified Capabilities
 
-*(No existing specs change — this is a new runtime path)*
+_(No existing specs change — this is a new runtime path)_
 
 ## Impact
 

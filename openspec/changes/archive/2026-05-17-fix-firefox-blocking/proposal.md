@@ -16,7 +16,7 @@ The Firefox blocking path (`webRequest` API in `background.ts`) doesn't actually
 
 ### Modified Capabilities
 
-*(No existing specs change)*
+_(No existing specs change)_
 
 ## Impact
 
