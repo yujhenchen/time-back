@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel
@@ -424,6 +423,7 @@ function BlockedSiteForm({
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="url-input">Add URL</FieldLabel>
               <div className="relative" ref={dropdownRef}>
+                <div className='w-full flex space-x-2'>
                 <div className="relative">
                   <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                   <Input
@@ -434,7 +434,7 @@ function BlockedSiteForm({
                       inputRef.current = e
                     }}
                     aria-invalid={fieldState.invalid}
-                    placeholder="Search or type a URL..."
+                    placeholder="Search for a site or type a URL..."
                     autoComplete="off"
                     className="pl-9"
                     onKeyDown={handleKeyDown}
@@ -449,6 +449,7 @@ function BlockedSiteForm({
                 <Button type="submit" form="blocked-urls-form">
                   Save
                 </Button>
+                </div>
 
                 {showSuggestions && suggestions.length > 0 ? (
                   <SuggestionDropdown
@@ -458,9 +459,6 @@ function BlockedSiteForm({
                     onHover={setSelectedIndex}
                   />
                 ) : null}
-                <FieldDescription>
-                  Search for a site or type a URL directly.
-                </FieldDescription>
                 {fieldState.invalid ? (
                   <FieldError errors={[fieldState.error]} />
                 ) : null}
