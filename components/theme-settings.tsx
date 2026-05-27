@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
 import { setThemeClass } from "@/lib/theme"
 import { Moon, Sun } from "lucide-react"
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
@@ -20,6 +20,10 @@ export function ThemeSettings() {
     setThemeClass("dark")
     await setTheme("dark")
   }, [setTheme])
+
+  useEffect(() => {
+    setThemeClass(theme)
+  }, [theme])
 
   return (
     <div className="space-y-6">
