@@ -11,12 +11,14 @@ The extension is approaching AMO (Firefox Add-ons) submission readiness, but has
 ## Capabilities
 
 ### New Capabilities
+
 - `license-file`: Add an MIT LICENSE file to the repo root
 - `code-security`: Remediate the `innerHTML` usage in `blocked.tsx` with a safe alternative
 - `privacy-disclosure`: Document which external services the extension calls and affirm no personal data is collected
 
 ### Modified Capabilities
-- *(none — no existing specs are changing)*
+
+- _(none — no existing specs are changing)_
 
 ## Impact
 
