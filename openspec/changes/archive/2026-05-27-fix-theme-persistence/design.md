@@ -5,10 +5,12 @@ The `ThemeSettings` component uses `useStorage` to read/write the theme preferen
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Apply the persisted theme class to `<html>` when the popup opens
 - Ensure the class stays in sync if the stored value changes externally (e.g., storage sync)
 
 **Non-Goals:**
+
 - No changes to storage schema, data model, or existing APIs
 - No changes to the `setThemeClass` utility in `lib/theme.ts`
 - No migrating away from `@plasmohq/storage` or `useStorage`

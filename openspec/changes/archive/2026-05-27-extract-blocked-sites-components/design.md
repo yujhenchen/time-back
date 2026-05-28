@@ -5,11 +5,13 @@
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Extract each sub-component into its own file under `components/`
 - Preserve all existing behavior — zero functional changes
 - Maintain the same public API (`BlockedSites` export)
 
 **Non-Goals:**
+
 - No behavioral changes, logic rewrites, or styling updates
 - No changes to schemas, validation, or storage patterns
 - No new dependencies
