@@ -3,6 +3,7 @@
   "displayName": "Time guard",
   "version": "0.0.1",
   "description": "save your time",
+  "license": "MIT",
   "author": "Jen C.",
   "scripts": {
     "dev": "plasmo dev",

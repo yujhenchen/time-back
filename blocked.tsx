@@ -16,9 +16,8 @@ type PageState =
   | { status: "error" }
 
 function decodeHtml(str: string): string {
-  const ta = document.createElement("textarea")
-  ta.innerHTML = str
-  return ta.value
+  return new DOMParser().parseFromString(str, "text/html").body
+    .textContent || ""
 }
 
 function BlockedPage() {
