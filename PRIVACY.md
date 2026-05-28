@@ -6,10 +6,10 @@
 
 The extension communicates with the following external services for functional purposes only:
 
-| Service | Purpose | Data Sent |
-|---------|---------|-----------|
-| [Open Trivia DB](https://opentdb.com) | Fetches a trivia question to display on the blocked page | None — a GET request with no parameters beyond `amount=1` |
+| Service                                               | Purpose                                                      | Data Sent                                                 |
+| ----------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------- |
+| [Open Trivia DB](https://opentdb.com)                 | Fetches a trivia question to display on the blocked page     | None — a GET request with no parameters beyond `amount=1` |
 | [DuckDuckGo Autocomplete](https://duckduckgo.com/ac/) | Provides URL suggestions while typing in the "Add URL" field | The keystrokes typed by the user into the URL input field |
-| [Google Favicons](https://www.google.com/s2/favicons) | Loads favicon images next to each blocked site in the list | The domain extracted from the blocked URL |
+| [Google Favicons](https://www.google.com/s2/favicons) | Loads favicon images next to each blocked site in the list   | The domain extracted from the blocked URL                 |
 
 None of these services receive personal information, browsing history, or any data beyond what is described above.

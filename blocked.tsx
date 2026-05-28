@@ -16,8 +16,9 @@ type PageState =
   | { status: "error" }
 
 function decodeHtml(str: string): string {
-  return new DOMParser().parseFromString(str, "text/html").body
-    .textContent || ""
+  return (
+    new DOMParser().parseFromString(str, "text/html").body.textContent || ""
+  )
 }
 
 function BlockedPage() {
