@@ -38,3 +38,5 @@ openspec/config.yaml
 
 .agents/
 tsconfig.tsbuildinfo
+
+docs/

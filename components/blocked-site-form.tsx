@@ -1,6 +1,8 @@
 "use client"
 
+import { blockedUrlSchema } from "@/components/blocked-site-list"
 import { SuggestionDropdown } from "@/components/suggestion-dropdown"
+import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldError,
@@ -8,7 +10,6 @@ import {
   FieldLabel
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { toDomain } from "@/lib/url-utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SearchIcon } from "lucide-react"
@@ -16,8 +17,6 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
-
-import { blockedUrlSchema } from "@/components/blocked-site-list"
 
 export function BlockedSiteForm({
   onAdd
@@ -155,32 +154,32 @@ export function BlockedSiteForm({
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="url-input">Add URL</FieldLabel>
               <div className="relative" ref={dropdownRef}>
-                <div className='w-full flex space-x-2'>
-                <div className="relative">
-                  <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-                  <Input
-                    {...field}
-                    id="url-input"
-                    ref={(e) => {
-                      field.ref(e)
-                      inputRef.current = e
-                    }}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Search for a site or type a URL..."
-                    autoComplete="off"
-                    className="pl-9"
-                    onKeyDown={handleKeyDown}
-                    onFocus={() => {
-                      if (suggestions.length > 0) setShowSuggestions(true)
-                    }}
-                  />
-                  {isSearching ? (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
-                  ) : null}
-                </div>
-                <Button type="submit" form="blocked-urls-form">
-                  Save
-                </Button>
+                <div className="w-full flex space-x-2">
+                  <div className="relative">
+                    <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                    <Input
+                      {...field}
+                      id="url-input"
+                      ref={(e) => {
+                        field.ref(e)
+                        inputRef.current = e
+                      }}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Search for a site or type a URL..."
+                      autoComplete="off"
+                      className="pl-9"
+                      onKeyDown={handleKeyDown}
+                      onFocus={() => {
+                        if (suggestions.length > 0) setShowSuggestions(true)
+                      }}
+                    />
+                    {isSearching ? (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+                    ) : null}
+                  </div>
+                  <Button type="submit" form="blocked-urls-form">
+                    Save
+                  </Button>
                 </div>
 
                 {showSuggestions && suggestions.length > 0 ? (

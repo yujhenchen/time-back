@@ -1,12 +1,12 @@
 "use client"
 
+import { BlockedSiteForm } from "@/components/blocked-site-form"
+import { BlockedSiteList } from "@/components/blocked-site-list"
 import { Separator } from "@/components/ui/separator"
 import { normalizeUrl } from "@/lib/url-utils"
 import { useCallback } from "react"
 import { toast } from "sonner"
 
-import { BlockedSiteList } from "@/components/blocked-site-list"
-import { BlockedSiteForm } from "@/components/blocked-site-form"
 import { useStorage } from "@plasmohq/storage/hook"
 
 const heading = (
