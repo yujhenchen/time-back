@@ -249,7 +249,7 @@ time-guard/
 | Validation | [Zod](https://zod.dev/) v4                                                                                |
 | Icons      | [lucide-react](https://lucide.dev/icons)                                                                  |
 | Build      | Plasmo CLI + PostCSS + esbuild                                                                            |
-| Formatting | Prettier + [`@ianvs/prettier-plugin-sort-imports`](https://github.com/IanVS/prettier-plugin-sort-imports) |
+| Formatting | [Biome](https://biomejs.dev/) |
 
 ---
 
@@ -326,7 +326,7 @@ pnpm build:firefox-mv2 # Production build — Firefox MV2
 pnpm build:firefox-mv3 # Production build — Firefox MV3
 pnpm package           # Build + create store-ready zip
 pnpm debug             # Dev server with verbose logging
-pnpm prettier --write .  # Format all files + sort imports
+pnpm biome check --write .  # Format, lint, and organize imports
 ```
 
 ---
@@ -337,7 +337,7 @@ pnpm prettier --write .  # Format all files + sort imports
 - Import via `@/` alias (maps to project root)
 - Theme via `.dark` class on `<html>`, persisted via `@plasmohq/storage`
 - CSS variables in `styles/globals.css` — avoid inline styles
-- Imports are automatically sorted by Prettier plugin — just run `pnpm prettier --write .`
+- Imports are automatically sorted by Biome — just run `pnpm biome check --write .`
 - No lint or typecheck scripts exist — formatting is the only automated check
 
 ---
@@ -349,7 +349,7 @@ Bug reports, feature suggestions, and pull requests are welcome.
 1. **Open an issue** describing the bug or feature
 2. **Fork the repo** and create a branch: `git checkout -b feat/my-change`
 3. **Make changes** following existing code conventions
-4. **Run formatter**: `pnpm prettier --write .`
+4. **Run formatter**: `pnpm biome check --write .`
 5. **Open a pull request** linking to the original issue
 
 For Firefox-specific issues, test against `pnpm dev --target=firefox-mv2` before reporting.

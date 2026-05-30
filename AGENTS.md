@@ -23,7 +23,7 @@ No lint, typecheck, or test scripts exist.
 - **shadcn/ui** (new-york style) in `components/ui/`, CSS variables in `styles/globals.css`, Tailwind v3, PostCSS.
 - **Forms**: `react-hook-form` + `@hookform/resolvers` + `zod`.
 - **Storage**: `@plasmohq/storage` (`Storage` class + `useStorage` React hook) for cross-browser persistent storage.
-- **Prettier** with `@ianvs/prettier-plugin-sort-imports` for import ordering. Run: `pnpm prettier --write .`
+- **Biome** for formatting, linting, and import organizing. Run: `pnpm biome check --write .`
 
 ## Conventions
 
