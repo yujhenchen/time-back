@@ -48,6 +48,7 @@ export function BlockedSiteForm({
     if (trimmed.length < 2) {
       setSuggestions([]);
       setShowSuggestions(false);
+      setIsSearching(false);
       return;
     }
 
