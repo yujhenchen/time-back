@@ -28,7 +28,6 @@ export function BlockedSiteForm({
   const [isSearching, setIsSearching] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout>>();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm<z.infer<typeof blockedUrlSchema>>({
     resolver: zodResolver(blockedUrlSchema),
@@ -162,7 +161,6 @@ export function BlockedSiteForm({
                       id="url-input"
                       ref={(e) => {
                         field.ref(e);
-                        inputRef.current = e;
                       }}
                       aria-invalid={fieldState.invalid}
                       placeholder="Search for a site or type a URL..."
