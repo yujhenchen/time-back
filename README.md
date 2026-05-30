@@ -20,6 +20,7 @@ Most site blockers just say _"nope"_. time-guard shows you a trivia question ins
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=06B6D4)](https://tailwindcss.com)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-New_York-000000?style=flat-square&logo=shadcnui&logoColor=000000)](https://ui.shadcn.com)
 [![Zod](https://img.shields.io/badge/Zod-4-3E67B1?style=flat-square&logo=zod&logoColor=3E67B1)](https://zod.dev)
+[![Biome](https://img.shields.io/badge/Biome-2.4.16-60A5FA?style=flat-square&logo=biome&logoColor=60A5FA)](https://biomejs.dev)
 
 </div>
 
@@ -205,51 +206,83 @@ Output goes to `build/`.
 ### Project Structure
 
 ```
-time-guard/
-├── popup.tsx                 # Popup entry → renders <Settings />
-├── sidepanel.tsx             # Side panel entry → renders <Settings />
-├── newtab.tsx                # New tab clock
-├── blocked.tsx               # Blocked page with trivia
-├── background.ts             # Service worker — URL blocking engine
-├── settings.tsx              # Shared settings UI
+time-back/
+├── popup.tsx                    # Popup entry → renders <Settings />
+├── sidepanel.tsx                # Side panel entry → renders <Settings />
+├── newtab.tsx                   # New tab clock
+├── blocked.tsx                  # Blocked page with trivia
+├── background.ts                # Service worker — URL blocking engine
+├── settings.tsx                 # Shared settings UI
 ├── components/
-│   ├── blocked-sites.tsx     # Block list container with CRUD
-│   ├── blocked-site-form.tsx # Add/edit URL with validation
-│   ├── blocked-site-row.tsx  # Single URL row (edit/delete)
+│   ├── blocked-sites.tsx        # Block list container with CRUD
+│   ├── blocked-site-list.tsx    # Site list display with remove
+│   ├── blocked-site-form.tsx    # Add site with validation + autocomplete
+│   ├── blocked-site-row.tsx     # Single URL row (edit/delete)
 │   ├── suggestion-dropdown.tsx  # DuckDuckGo-powered autocomplete
-│   ├── theme-settings.tsx    # Dark/light toggle
-│   ├── favicon.tsx           # Favicon image component
-│   └── ui/                   # shadcn/ui primitives
-│       ├── button.tsx, card.tsx, input.tsx, label.tsx, ...
+│   ├── theme-settings.tsx       # Dark/light toggle
+│   ├── favicon.tsx              # Favicon image component
+│   ├── favicon.test.tsx         # Favicon tests
+│   └── ui/                      # shadcn/ui primitives
+│       ├── button.tsx
+│       ├── card.tsx
+│       ├── field.tsx
+│       ├── input-group.tsx
+│       ├── input.tsx
+│       ├── label.tsx
+│       ├── separator.tsx
+│       └── textarea.tsx
 ├── lib/
-│   ├── theme.ts              # Theme state + persistence
-│   ├── url-utils.ts          # URL normalization helpers
-│   └── utils.ts              # cn() and other utilities
+│   ├── theme.ts                 # Theme state + persistence
+│   ├── theme.test.ts            # Theme tests
+│   ├── url-utils.ts             # URL normalization helpers
+│   ├── url-utils.test.ts        # URL utils tests
+│   ├── utils.ts                 # cn() and other utilities
+│   └── utils.test.ts            # Utils tests
+├── tests/
+│   ├── setup.ts                 # Jest setup with chrome API mocks
+│   └── __mocks__/
+│       └── @plasmohq/
+│           └── storage.ts       # @plasmohq/storage mock
 ├── styles/
-│   └── globals.css           # Tailwind + CSS custom properties
+│   └── globals.css              # Tailwind + CSS custom properties
 ├── assets/
-│   └── icon.png              # Extension icon
-├── PRIVACY.md                # Privacy disclosure
-├── LICENSE                   # MIT license
-├── package.json              # Dependencies + manifest config
-└── tsconfig.json             # TypeScript configuration
+│   └── icon.png                 # Extension icon
+├── docs/
+│   └── superpowers/specs/       # Design documents
+├── openspec/                    # Specification tracking
+├── build/                       # Build output (gitignored)
+├── workflows/                   # CI workflows
+├── PRIVACY.md                   # Privacy disclosure
+├── LICENSE                      # MIT license
+├── package.json                 # Dependencies + manifest config
+├── tsconfig.json                # TypeScript configuration
+├── tsconfig.test.json           # TypeScript config for tests
+├── jest.config.ts               # Jest configuration
+├── biome.json                   # Biome formatter & linter config
+├── tailwind.config.js           # Tailwind CSS configuration
+├── postcss.config.js            # PostCSS configuration
+├── components.json              # shadcn/ui configuration
+└── .gitignore                   # Git ignore rules
 ```
 
 ---
 
-### Tech Stack
+ ### Tech Stack
 
-| Layer      | Technology                                                                                                |
-| ---------- | --------------------------------------------------------------------------------------------------------- |
-| Framework  | [Plasmo](https://docs.plasmo.com/) v0.90.5                                                                |
-| UI         | React 18 + TypeScript 5.3                                                                                 |
-| Styling    | Tailwind CSS v3 + [shadcn/ui](https://ui.shadcn.com/) (new-york style)                                    |
-| Storage    | [`@plasmohq/storage`](https://docs.plasmo.com/framework/storage)                                          |
-| Forms      | react-hook-form + zod                                                                                     |
-| Validation | [Zod](https://zod.dev/) v4                                                                                |
-| Icons      | [lucide-react](https://lucide.dev/icons)                                                                  |
-| Build      | Plasmo CLI + PostCSS + esbuild                                                                            |
-| Formatting | [Biome](https://biomejs.dev/) |
+| Layer       | Technology                                                                                                |
+| ----------- | --------------------------------------------------------------------------------------------------------- |
+| Framework   | [Plasmo](https://docs.plasmo.com/) v0.90.5                                                                |
+| UI          | React 18 + TypeScript 5.3                                                                                 |
+| Styling     | Tailwind CSS v3 + [shadcn/ui](https://ui.shadcn.com/) (new-york style)                                    |
+| Storage     | [`@plasmohq/storage`](https://docs.plasmo.com/framework/storage)                                          |
+| Forms       | react-hook-form + zod                                                                                     |
+| Validation  | [Zod](https://zod.dev/) v4                                                                                |
+| Icons       | [lucide-react](https://lucide.dev/icons)                                                                  |
+| Build       | Plasmo CLI + PostCSS + esbuild                                                                            |
+| Formatting  | [Biome](https://biomejs.dev/)                                                                             |
+| Notifications | [sonner](https://sonner.emilkowal.ski/) v2                                                              |
+| Components  | [@radix-ui](https://www.radix-ui.com/) (label, separator, slot)                                          |
+| Utilities   | `class-variance-authority` + `clsx` + `tailwind-merge` (via `cn()`) |
 
 ---
 
@@ -319,14 +352,22 @@ Visit blocked site ──▶ background.ts intercepts request
 ### Scripts
 
 ```bash
-pnpm dev               # Dev server (HMR) — Chrome
-pnpm dev --target=firefox-mv2  # Dev server — Firefox
-pnpm build             # Production build — Chrome
-pnpm build:firefox-mv2 # Production build — Firefox MV2
-pnpm build:firefox-mv3 # Production build — Firefox MV3
-pnpm package           # Build + create store-ready zip
-pnpm debug             # Dev server with verbose logging
-pnpm biome check --write .  # Format, lint, and organize imports
+pnpm dev                          # Dev server (HMR) — Chrome
+pnpm dev --target=firefox-mv2     # Dev server — Firefox
+pnpm build                        # Production build — Chrome
+pnpm build:firefox-mv2            # Production build — Firefox MV2
+pnpm build:firefox-mv3            # Production build — Firefox MV3
+pnpm package                      # Build + create store-ready zip
+pnpm debug                        # Dev server with verbose logging
+pnpm test                         # Run tests (Jest)
+pnpm test:watch                   # Run tests in watch mode
+pnpm test:coverage                # Run tests with coverage report
+```
+
+Formatting, linting, and import organizing are handled by Biome — run as a raw CLI command:
+
+```bash
+pnpm biome check --write .
 ```
 
 ---
@@ -338,7 +379,8 @@ pnpm biome check --write .  # Format, lint, and organize imports
 - Theme via `.dark` class on `<html>`, persisted via `@plasmohq/storage`
 - CSS variables in `styles/globals.css` — avoid inline styles
 - Imports are automatically sorted by Biome — just run `pnpm biome check --write .`
-- No lint or typecheck scripts exist — formatting is the only automated check
+- Biome handles both formatting and linting; no typecheck script exists
+- Tests are written with Jest + `@testing-library/react`
 
 ---
 
@@ -349,8 +391,9 @@ Bug reports, feature suggestions, and pull requests are welcome.
 1. **Open an issue** describing the bug or feature
 2. **Fork the repo** and create a branch: `git checkout -b feat/my-change`
 3. **Make changes** following existing code conventions
-4. **Run formatter**: `pnpm biome check --write .`
-5. **Open a pull request** linking to the original issue
+4. **Run formatter and linter**: `pnpm biome check --write .`
+5. **Run tests**: `pnpm test` (or `pnpm test:watch` during development)
+6. **Open a pull request** linking to the original issue
 
 For Firefox-specific issues, test against `pnpm dev --target=firefox-mv2` before reporting.
 
