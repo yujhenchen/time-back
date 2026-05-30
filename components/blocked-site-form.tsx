@@ -1,126 +1,125 @@
-"use client"
+"use client";
 
-import { blockedUrlSchema } from "@/components/blocked-site-list"
-import { SuggestionDropdown } from "@/components/suggestion-dropdown"
-import { Button } from "@/components/ui/button"
+import { blockedUrlSchema } from "@/components/blocked-site-list";
+import { SuggestionDropdown } from "@/components/suggestion-dropdown";
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldError,
   FieldGroup,
-  FieldLabel
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { toDomain } from "@/lib/url-utils"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { SearchIcon } from "lucide-react"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { toDomain } from "@/lib/url-utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SearchIcon } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import type * as z from "zod";
 
 export function BlockedSiteForm({
-  onAdd
+  onAdd,
 }: {
-  onAdd: (rawUrl: string) => Promise<boolean>
+  onAdd: (rawUrl: string) => Promise<boolean>;
 }) {
-  const [suggestions, setSuggestions] = useState<string[]>([])
-  const [showSuggestions, setShowSuggestions] = useState(false)
-  const [selectedIndex, setSelectedIndex] = useState(-1)
-  const [isSearching, setIsSearching] = useState(false)
-  const searchTimer = useRef<ReturnType<typeof setTimeout>>()
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm<z.infer<typeof blockedUrlSchema>>({
     resolver: zodResolver(blockedUrlSchema),
     defaultValues: {
-      url: ""
-    }
-  })
+      url: "",
+    },
+  });
 
-  const watchedUrl = form.watch("url")
+  const watchedUrl = form.watch("url");
 
   useEffect(() => {
     if (searchTimer.current) {
-      clearTimeout(searchTimer.current)
+      clearTimeout(searchTimer.current);
     }
 
-    const trimmed = watchedUrl.trim()
+    const trimmed = watchedUrl.trim();
     if (trimmed.length < 2) {
-      setSuggestions([])
-      setShowSuggestions(false)
-      return
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
     }
 
-    setIsSearching(true)
+    setIsSearching(true);
     searchTimer.current = setTimeout(async () => {
       try {
         const res = await fetch(
-          `https://duckduckgo.com/ac/?q=${encodeURIComponent(trimmed)}&type=list`
-        )
-        const data = await res.json()
+          `https://duckduckgo.com/ac/?q=${encodeURIComponent(trimmed)}&type=list`,
+        );
+        const data = await res.json();
 
-        let phrases: string[] = []
+        let phrases: string[] = [];
         if (Array.isArray(data) && data.length > 0 && data[0].phrase) {
-          phrases = data.map((item: { phrase: string }) => item.phrase)
+          phrases = data.map((item: { phrase: string }) => item.phrase);
         } else if (Array.isArray(data) && Array.isArray(data[1])) {
-          phrases = data[1] as string[]
+          phrases = data[1] as string[];
         }
 
-        const domains = [...new Set(phrases.map(toDomain).filter(Boolean))]
-        setSuggestions(domains)
-        setShowSuggestions(domains.length > 0)
-        setSelectedIndex(-1)
+        const domains = [...new Set(phrases.map(toDomain).filter(Boolean))];
+        setSuggestions(domains);
+        setShowSuggestions(domains.length > 0);
+        setSelectedIndex(-1);
       } catch {
-        setSuggestions([])
-        setShowSuggestions(false)
+        setSuggestions([]);
+        setShowSuggestions(false);
       } finally {
-        setIsSearching(false)
+        setIsSearching(false);
       }
-    }, 300)
+    }, 300);
 
     return () => {
       if (searchTimer.current) {
-        clearTimeout(searchTimer.current)
+        clearTimeout(searchTimer.current);
       }
-    }
-  }, [watchedUrl])
+    };
+  }, [watchedUrl]);
 
   const handleSuggestionSelect = useCallback(
     async (domain: string) => {
-      const success = await onAdd(domain)
+      const success = await onAdd(domain);
       if (success) {
-        form.reset()
-        setSuggestions([])
-        setShowSuggestions(false)
+        form.reset();
+        setSuggestions([]);
+        setShowSuggestions(false);
       }
     },
-    [onAdd, form]
-  )
+    [onAdd, form],
+  );
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (!showSuggestions || suggestions.length === 0) return
+      if (!showSuggestions || suggestions.length === 0) return;
 
       if (e.key === "ArrowDown") {
-        e.preventDefault()
+        e.preventDefault();
         setSelectedIndex((prev) =>
-          prev < suggestions.length - 1 ? prev + 1 : 0
-        )
+          prev < suggestions.length - 1 ? prev + 1 : 0,
+        );
       } else if (e.key === "ArrowUp") {
-        e.preventDefault()
+        e.preventDefault();
         setSelectedIndex((prev) =>
-          prev > 0 ? prev - 1 : suggestions.length - 1
-        )
+          prev > 0 ? prev - 1 : suggestions.length - 1,
+        );
       } else if (e.key === "Enter" && selectedIndex >= 0) {
-        e.preventDefault()
-        handleSuggestionSelect(suggestions[selectedIndex])
+        e.preventDefault();
+        handleSuggestionSelect(suggestions[selectedIndex]);
       } else if (e.key === "Escape") {
-        setShowSuggestions(false)
+        setShowSuggestions(false);
       }
     },
-    [showSuggestions, suggestions, selectedIndex, handleSuggestionSelect]
-  )
+    [showSuggestions, suggestions, selectedIndex, handleSuggestionSelect],
+  );
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -128,19 +127,19 @@ export function BlockedSiteForm({
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
       ) {
-        setShowSuggestions(false)
+        setShowSuggestions(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   async function onSubmit(data: z.infer<typeof blockedUrlSchema>) {
-    const success = await onAdd(data.url)
+    const success = await onAdd(data.url);
     if (success) {
-      form.reset()
-      setSuggestions([])
-      setShowSuggestions(false)
+      form.reset();
+      setSuggestions([]);
+      setShowSuggestions(false);
     }
   }
 
@@ -161,8 +160,8 @@ export function BlockedSiteForm({
                       {...field}
                       id="url-input"
                       ref={(e) => {
-                        field.ref(e)
-                        inputRef.current = e
+                        field.ref(e);
+                        inputRef.current = e;
                       }}
                       aria-invalid={fieldState.invalid}
                       placeholder="Search for a site or type a URL..."
@@ -170,7 +169,7 @@ export function BlockedSiteForm({
                       className="pl-9"
                       onKeyDown={handleKeyDown}
                       onFocus={() => {
-                        if (suggestions.length > 0) setShowSuggestions(true)
+                        if (suggestions.length > 0) setShowSuggestions(true);
                       }}
                     />
                     {isSearching ? (
@@ -199,5 +198,5 @@ export function BlockedSiteForm({
         />
       </FieldGroup>
     </form>
-  )
+  );
 }
