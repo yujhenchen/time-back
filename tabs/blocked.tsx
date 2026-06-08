@@ -1,71 +1,68 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-import "styles/globals.css"
+import "@/styles/globals.css";
+import { Button } from "@/components/ui/button";
 
 interface TriviaData {
-  category: string
-  question: string
-  answer: string
+  category: string;
+  question: string;
+  answer: string;
 }
 
 type PageState =
   | { status: "loading" }
   | { status: "trivia"; data: TriviaData }
-  | { status: "error" }
+  | { status: "error" };
 
 function decodeHtml(str: string): string {
   return (
     new DOMParser().parseFromString(str, "text/html").body.textContent || ""
-  )
+  );
 }
 
 function BlockedPage() {
-  const [state, setState] = useState<PageState>({ status: "loading" })
-  const [showAnswer, setShowAnswer] = useState(false)
+  const [state, setState] = useState<PageState>({ status: "loading" });
+  const [showAnswer, setShowAnswer] = useState(false);
 
-  const params = new URLSearchParams(window.location.search)
-  const blockedUrl = params.get("url")
+  const params = new URLSearchParams(window.location.search);
+  const blockedUrl = params.get("url");
 
   useEffect(() => {
-    document.title = "Site Blocked"
+    document.title = "Site Blocked";
 
     fetch("https://opentdb.com/api.php?amount=1")
       .then((res) => {
-        if (!res.ok) throw new Error("HTTP " + res.status)
-        return res.json()
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
       })
       .then((data) => {
         if (
-          !data ||
-          data.response_code !== 0 ||
+          data?.response_code !== 0 ||
           !data.results ||
           data.results.length === 0
         ) {
-          throw new Error("Invalid response")
+          throw new Error("Invalid response");
         }
-        const q = data.results[0]
+        const q = data.results[0];
         setState({
           status: "trivia",
           data: {
             category: decodeHtml(q.category),
             question: decodeHtml(q.question),
-            answer: decodeHtml(q.correct_answer)
-          }
-        })
+            answer: decodeHtml(q.correct_answer),
+          },
+        });
       })
       .catch(() => {
-        setState({ status: "error" })
-      })
-  }, [])
+        setState({ status: "error" });
+      });
+  }, []);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
       <div className="w-full max-w-[420px] p-6">
-        <p className="mb-4 text-center text-sm font-medium text-muted-foreground">
-          🚫 Site Blocked
-        </p>
         <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
           {state.status === "loading" && (
             <div className="py-8 text-center text-muted-foreground">
@@ -85,14 +82,16 @@ function BlockedPage() {
                 <div
                   className={`mb-3 rounded-lg bg-secondary p-3 text-base leading-relaxed text-card-foreground ${
                     showAnswer ? "block" : "hidden"
-                  }`}>
+                  }`}
+                >
                   {state.data.answer}
                 </div>
-                <button
+                <Button
                   onClick={() => setShowAnswer(!showAnswer)}
-                  className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90">
+                  className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                >
                   {showAnswer ? "Hide Answer" : "Show Answer"}
-                </button>
+                </Button>
               </div>
             </>
           )}
@@ -116,7 +115,7 @@ function BlockedPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default BlockedPage
+export default BlockedPage;

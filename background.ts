@@ -125,7 +125,7 @@ async function syncDNRRules(entries: BlockedEntry[]): Promise<void> {
         action: {
           type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
           redirect: {
-            extensionPath: `/blocked.html?url=${encodeURIComponent(e.raw)}`
+            extensionPath: `/tabs/blocked.html?url=${encodeURIComponent(e.raw)}`
           }
         },
         condition: {
@@ -191,7 +191,7 @@ function setupWebRequestListener(): void {
       if (!initialised) {
         return {
           redirectUrl: chrome.runtime.getURL(
-            `blocked.html?loading=1&url=${encodeURIComponent(details.url)}`
+            `tabs/blocked.html?loading=1&url=${encodeURIComponent(details.url)}`
           )
         }
       }
@@ -199,7 +199,7 @@ function setupWebRequestListener(): void {
       if (isUrlBlocked(details.url)) {
         return {
           redirectUrl: chrome.runtime.getURL(
-            `blocked.html?url=${encodeURIComponent(details.url)}`
+              `tabs/blocked.html?url=${encodeURIComponent(details.url)}`
           )
         }
       }
